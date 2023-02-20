@@ -1,0 +1,24 @@
+{
+  "name": "socketx",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js ",
+  "node": {
+    "trace_limit": 0
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "joi": "^17.7.1",
+    "mongoose": "^6.9.1",
+    "node-fetch": "^2.6.9",
+    "ws": "^8.12.1"
+  }
+}
