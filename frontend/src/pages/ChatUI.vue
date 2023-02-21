@@ -62,8 +62,8 @@ export default {
       socket: null,
       name: localStorage.getItem("name"),
       alert: null,
-      // url: "ws://192.168.1.13:3000/",
-      url: "wss://world-chat-mevn-production.up.railway.app/",
+      url: "ws://192.168.1.13:3000/",
+      // url: "wss://world-chat-mevn-production.up.railway.app/",
       continent: this.$route.params.id,
     };
   },
@@ -310,6 +310,7 @@ button i {
   }
   .chat {
     padding-bottom: 15vh;
+    padding-top: 10vh;
   }
   .chat-input input {
     margin: 0 10px;
