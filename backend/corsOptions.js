@@ -1,5 +1,4 @@
 var corsOptions = {
-  // block all requests by default
   origin: false,
 };
 // var corsOptions = {

@@ -44,12 +44,6 @@
                 <span class="text nav-text">{{ item.label }}</span>
               </a>
             </li>
-            <li @click="aboutPush">
-              <a>
-                <i class="bx bx-info-circle icon"></i>
-                <span class="text nav-text">About</span>
-              </a>
-            </li>
             <li @click="">
               <a>
                 <i class="bx bx-log-out icon"></i>
@@ -74,6 +68,9 @@ export default {
     if (continent != "europe") {
       const index = this.menuItems.findIndex((item) => item.label === continent);
       this.activeState = index;
+    }
+    if (localStorage.getItem("dark")) {
+      this.dark = localStorage.getItem("dark");
     }
   },
   data() {
@@ -103,13 +100,14 @@ export default {
           label: "america",
           iconClass: "fa-solid fa-globe-americas icon",
         },
+        {
+          label: "about",
+          iconClass: "bx bx-info-circle icon",
+        },
       ],
     };
   },
   methods: {
-    aboutPush() {
-      this.$router.push({ name: "about", query: { q: "chat" } });
-    },
     logout() {
       this.$store.dispatch("logout");
     },
@@ -118,12 +116,16 @@ export default {
     },
     darkMode() {
       this.dark = !this.dark;
+      localStorage.setItem("dark", this.dark);
     },
     setState(index) {
       this.activeState = index;
+      if (this.menuItems[index].label === "about") {
+        this.$router.push({ name: "about", query: { q: "chat" } });
+        return;
+      }
       this.$router.push(this.menuItems[index].label.toLowerCase());
       this.$emit("change");
-      // this.close = !this.close;
     },
   },
 };
@@ -171,7 +173,7 @@ export default {
 
 .body.dark {
   /* --body-color: #313f4d; */
-  --body-color: #242526;
+  --body-color: #464646;
   --sidebar-color: #242526;
   --primary-color: #3a3b3c;
   --primary-color-light: #3a3b3c;

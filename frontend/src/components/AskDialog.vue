@@ -3,11 +3,18 @@
     <div class="modal-wrapper">
       <div class="modal-container">
         <div class="modal-header">
-          <h3>Please enter your name</h3>
+          <h3>Please enter your nickname</h3>
         </div>
         <div class="modal-body">
           <form @submit.prevent="submitName">
-            <input type="text" v-model="name" placeholder="Your name" />
+            <input
+              type="text"
+              v-model="name"
+              placeholder="Your code-name"
+              minlength="3"
+              maxlength="7"
+              required
+            />
             <button type="submit">Submit</button>
           </form>
         </div>

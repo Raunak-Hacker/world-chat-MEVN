@@ -5,8 +5,8 @@
       <br />
       <br />
       <h1>
-        I built this Web App in hope that it will empower and encourage small scale
-        businesses to grow.
+        I built this Web App to connect people from all over the world and share their
+        experiences.
       </h1>
       <br /><br />
     </div>
@@ -38,6 +38,7 @@
   text-align: center;
   width: 100%;
   height: 100%;
+  overflow-y: auto;
 }
 h1 {
   font-size: 1em;
@@ -47,6 +48,7 @@ h1 {
 .headings {
   width: 55%;
   margin: auto;
+  height: max-content;
 }
 .headings h3 {
   color: green;
@@ -68,21 +70,24 @@ p {
 }
 .photos {
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: 60%;
+  height: 100%;
+  height: max-content;
+  flex-wrap: wrap;
 }
 
 .photo img {
   border-radius: 5px;
   transition: 0.5s;
+  height: 100%;
+  display: block;
+  margin: auto;
 }
 .photo {
-  width: 50%;
-  height: 100%;
-  position: relative;
+  flex: 1;
+  /* position: relative; */
 }
 img:hover {
   box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.8);
@@ -95,18 +100,23 @@ img:hover {
 }
 .name {
   /* white-space: nowrap; */
+  flex: 1;
   overflow-wrap: break-word;
   box-sizing: border-box;
   margin-right: 10%;
   border-radius: 10px 10px 0px 0px;
   line-height: 5rem;
   text-align: center;
-  width: 50%;
   text-shadow: 0 1px 0 rgb(37, 37, 37), 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0 #b9b9b9,
     0 5px 0 #aaa, 0 6px 1px rgba(0, 0, 0, 0.1), 0 0 5px rgba(0, 0, 0, 0.1),
     0 1px 3px rgba(0, 0, 0, 0.3), 0 3px 5px rgba(0, 0, 0, 0.2),
     0 5px 5px rgba(0, 0, 0, 0.25), 0 10px 5px rgba(0, 0, 0, 0.2),
     0 10px 5px rgba(0, 0, 0, 0.15);
+}
+@media (min-width: 768px) {
+  .photos {
+    margin: 0;
+  }
 }
 @media (max-width: 768px) {
   .headings {
@@ -137,7 +147,7 @@ img:hover {
     box-sizing: border-box;
     border-radius: 10px 10px 0px 0px;
     text-align: center;
-    background-color: #fff;
+    /* background-color: #fff; */
     height: 10%;
     margin: auto;
     width: 70%;

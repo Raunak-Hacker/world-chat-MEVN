@@ -1,5 +1,5 @@
 const fetch = require("node-fetch");
-const url = "http://localhost:3000/";
+const url = "http://192.168.1.13:3000/";
 function read(continent) {
   // Read from database
   return fetch(url + "chat/" + continent)

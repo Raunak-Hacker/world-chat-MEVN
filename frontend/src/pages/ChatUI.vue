@@ -10,7 +10,7 @@
   </BaseDialog>
   <TheSidebar v-else>
     <div class="chat-container">
-      <div class="chat">
+      <div class="chat" ref="chat">
         <div
           class="chat-message"
           :class="{ user: message.name === name }"
@@ -24,8 +24,10 @@
         </div>
       </div>
       <form class="chat-input" @submit.prevent="sendMessage">
-        <input type="text" placeholder="Type your message..." v-model="msg" />
-        <button type="submit">Send</button>
+        <input type="text" placeholder="Type your message..." v-model="msg" required />
+        <button type="submit">
+          <i class="fas fa-paper-plane"></i>
+        </button>
       </form>
     </div>
   </TheSidebar>
@@ -46,12 +48,11 @@ export default {
       drawer: true,
       socket: {},
       msg: "",
-      status: "Connecting...",
       messages: [],
       socket: null,
       name: localStorage.getItem("name"),
       alert: null,
-      url: "localhost:3000",
+      url: "192.168.1.13:3000/",
       continent: this.$route.params.id,
     };
   },
@@ -74,15 +75,13 @@ export default {
   },
   mounted() {
     this.socket = new WebSocket("ws://" + this.url);
-    this.socket.addEventListener("error", (event) => {
-      event.preventDefault();
+    this.socket.onerror = () => {
       this.msg = "Connection error";
       this.alert = true;
-    });
-    this.socket.addEventListener("open", (event) => {
-      this.status = "Connected";
+    };
+    this.socket.onopen = () => {
       this.getMessages();
-    });
+    };
     this.socket.onmessage = (event) => {
       const message = JSON.parse(event.data);
       if (message.messages) {
@@ -95,20 +94,25 @@ export default {
         this.alert = message.message;
         this.msg = message.message;
       } else {
-        console.log(message);
         this.messages.push(message);
       }
-      const chat = document.querySelector(".chat");
-      chat.scrollTop = chat.scrollHeight;
+      this.$nextTick(() => {
+        this.$refs.chat.scrollTop = this.$refs.chat.scrollHeight;
+      });
     };
   },
   methods: {
     getMessages() {
-      var msg = {
-        get: true,
-        continent: this.continent,
-      };
-      this.socket.send(JSON.stringify(msg));
+      try {
+        var msg = {
+          get: true,
+          continent: this.continent,
+        };
+        this.socket.send(JSON.stringify(msg));
+      } catch (error) {
+        this.msg = "You are not connected";
+        this.alert = true;
+      }
     },
     async sendMessage() {
       var msg = {
@@ -117,8 +121,13 @@ export default {
         name: this.name,
       };
       this.socket.send(JSON.stringify(msg));
+      this.messages.push(msg);
       this.msg = "";
+      this.$nextTick(() => {
+        this.$refs.chat.scrollTop = this.$refs.chat.scrollHeight;
+      });
     },
+
     saveName(name) {
       this.name = name;
       localStorage.setItem("name", name);
@@ -139,20 +148,35 @@ export default {
 /* .name {
   color: papayawhip;
 } */
+
 .chat {
   display: flex;
   flex-direction: column;
-  overflow-y: scroll;
+  overflow-y: auto;
   padding: 20px;
   width: 100%;
   height: 100%;
-  background-image: linear-gradient(135deg, #6b73ff 10%, #000dff 100%);
-  background-image: linear-gradient(135deg, #97abff 10%, #123597 100%);
-  background-image: linear-gradient(to right, #5d5d5d 50%, black 100%);
+  /* background-image: linear-gradient(135deg, #6b73ff 10%, #000dff 100%); */
+  background-image: linear-gradient(135deg, #4965d5 10%, #7102f7 100%);
+  /* background-image: linear-gradient(to right, #5d5d5d 50%, black 100%); */
   /* background-image: url("../assets/hexa.jpg"); */
   background-size: contain;
 }
+.chat::-webkit-scrollbar {
+  width: 0.5rem;
+}
 
+.chat::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 100px;
+}
+
+.chat::-webkit-scrollbar-thumb {
+  background-image: linear-gradient(180deg, #00c6ff 0%, #3931af 99%);
+  /* background: -webkit-linear-gradient(left, #a71b63, #ffd500); */
+  box-shadow: inset 2px 2px 5px 0 rgba(#fff, 0.5);
+  border-radius: 100px;
+}
 .chat-message {
   display: flex;
   flex-direction: column;
@@ -212,11 +236,48 @@ export default {
 }
 
 .chat-input button {
-  padding: 10px;
+  /* padding: 10px 15px; */
   background-color: #50b0ff;
   color: #fff;
   border: none;
-  border-radius: 20px;
+  border-radius: 50%;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  width: 50px;
+}
+button i {
+  margin-top: 2px;
+  margin-right: 2.5px;
+}
+
+@media (max-width: 768px) {
+  .chat-input input {
+    flex: 1;
+    margin-right: 10px;
+    padding: 10px;
+    border-radius: 20px;
+    border: none;
+    outline: 0;
+  }
+  .chat-input button {
+    /* padding: 10px 15px; */
+    background-color: #50b0ff;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 150px;
+    width: 50px;
+  }
+  button i {
+    margin-top: 2px;
+    margin-right: 2.5px;
+  }
 }
 </style>
