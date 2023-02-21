@@ -1,6 +1,6 @@
 const allowedOrigins = [
-  "https://world-chat-mevn-production.up.railway.app",
   "https://raunak-chat.web.app",
+  "https://chat.raunak.me",
 ];
 const corsOptions = {
   origin: function (origin, callback) {
