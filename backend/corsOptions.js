@@ -1,8 +1,6 @@
 const allowedOrigins = [
   "https://raunak-chat.web.app",
   "https://chat.raunak.me",
-  "http://localhost:5173",
-  "http://192.168.1.13:5173",
 ];
 const corsOptions = {
   origin: function (origin, callback) {

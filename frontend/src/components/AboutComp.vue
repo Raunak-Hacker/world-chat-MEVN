@@ -24,8 +24,6 @@
   </section>
 </template>
 
-<script></script>
-
 <style scoped>
 * {
   font-family: "Raleway", sans-serif;
@@ -119,19 +117,22 @@ img:hover {
   }
 }
 @media (max-width: 768px) {
+  #aboutUs {
+    overflow-y: scroll;
+  }
   .headings {
-    margin-top: 10%;
+    margin-top: 5%;
     width: 90%;
   }
   .headings p {
     width: 80%;
   }
   .photos {
-    display: flex;
     flex-direction: column;
     justify-content: center;
   }
   .photo {
+    flex: 0;
     flex-basis: 31%;
     border-radius: 10px;
     margin-bottom: 5%;
@@ -144,15 +145,15 @@ img:hover {
     width: 80%;
   }
   .name {
+    flex: 0;
     box-sizing: border-box;
     border-radius: 10px 10px 0px 0px;
     text-align: center;
     /* background-color: #fff; */
-    height: 10%;
-    margin: auto;
+    /* height: 10%; */
+    /* margin: auto; */
     width: 70%;
-    bottom: -15%;
-    left: 15%;
+    margin-bottom: 15vh;
   }
 
   strong {

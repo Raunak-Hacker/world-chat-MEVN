@@ -9,6 +9,16 @@
     <p>{{ msg }}</p>
   </BaseDialog>
   <TheSidebar v-else>
+    <div class="online" @click="toggle">
+      <div class="green-circ"></div>
+      <div class="cont">
+        <strong>{{ continent }}</strong> ||
+      </div>
+      <div class="online-count">
+        <span>&nbsp;{{ membersOnline }}</span>
+        <small> Online</small>
+      </div>
+    </div>
     <div class="chat-container">
       <div class="chat" ref="chat">
         <div
@@ -45,7 +55,6 @@ export default {
   },
   data() {
     return {
-      drawer: true,
       socket: {},
       msg: "",
       messages: [],
@@ -53,8 +62,8 @@ export default {
       socket: null,
       name: localStorage.getItem("name"),
       alert: null,
-      url: "ws://192.168.1.13:3000/",
-      // url: "wss://world-chat-mevn-production.up.railway.app/",
+      // url: "ws://192.168.1.13:3000/",
+      url: "wss://world-chat-mevn-production.up.railway.app/",
       continent: this.$route.params.id,
     };
   },
@@ -68,8 +77,6 @@ export default {
     this.socket.close();
   },
   created() {
-    // query params
-    // console.log(this.$route.query.q);
     const continents = ["africa", "asia", "europe", "america", "australia", "about"];
     if (!continents.includes(this.continent)) {
       this.$router.replace({ name: "not-found" });
@@ -97,7 +104,6 @@ export default {
         this.msg = message.message;
       } else if (message.type === "online") {
         this.membersOnline = message.online;
-        console.log(this.membersOnline);
       } else {
         this.messages.push(message);
       }
@@ -107,6 +113,9 @@ export default {
     };
   },
   methods: {
+    toggle() {
+      this.$store.commit("toggle");
+    },
     getMessages() {
       try {
         var msg = {
@@ -144,7 +153,39 @@ export default {
 };
 </script>
 <style scoped>
+.online {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: var(--body-color);
+  color: var(--text-color);
+  text-transform: capitalize;
+  display: flex;
+  align-items: center;
+  padding-left: 2%;
+  height: 10%;
+  width: 100%;
+  z-index: 0;
+}
+.online-count {
+  font-family: "Raleway", sans-serif;
+  font-size: 1.1rem;
+}
+.online-count span {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #00ff00;
+  font-weight: bolder;
+}
+.green-circ {
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  background-color: #00ff00;
+  margin: 0 10px;
+  margin-bottom: 3px;
+}
 .chat-container {
+  padding-top: 5%;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -161,11 +202,12 @@ export default {
   padding: 20px;
   width: 100%;
   height: 100%;
-  /* background-image: linear-gradient(135deg, #6b73ff 10%, #000dff 100%); */
   background-image: linear-gradient(135deg, #4965d5 10%, #7102f7 100%);
-  /* background-image: linear-gradient(to right, #5d5d5d 50%, black 100%); */
-  /* background-image: url("../assets/hexa.jpg"); */
-  background-size: contain;
+}
+.body.dark .chat {
+  background-image: url("../assets/hexa.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 .chat::-webkit-scrollbar {
   width: 0.5rem;
@@ -197,6 +239,8 @@ export default {
 }
 .message-text {
   max-width: 80%;
+  width: max-content;
+  word-wrap: break-word;
   padding: 15px;
   border-radius: 15px 15px 15px 0;
   background: linear-gradient(to bottom, #ffffff, #cbc9c9);
@@ -228,7 +272,7 @@ export default {
   display: flex;
   align-items: center;
   padding: 10px;
-  border-top: 1px solid #ccc;
+  /* border-top: 1px solid #ccc; */
 }
 
 .chat-input input {
@@ -259,30 +303,30 @@ button i {
 }
 
 @media (max-width: 768px) {
+  .chat-input {
+    position: fixed;
+    bottom: 0;
+    background-color: var(--body-color);
+  }
+  .chat {
+    padding-bottom: 15vh;
+  }
   .chat-input input {
-    flex: 1;
-    margin-right: 10px;
+    margin: 0 10px;
     padding: 10px;
     border-radius: 20px;
     border: none;
-    outline: 0;
+    width: 80vw;
   }
+
   .chat-input button {
-    /* padding: 10px 15px; */
-    background-color: #50b0ff;
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 150px;
-    width: 50px;
+    height: 10vw;
+    width: 10vw;
+    font-size: 4.5vw;
+    padding: 2%;
   }
-  button i {
-    margin-top: 2px;
-    margin-right: 2.5px;
+  .chat::-webkit-scrollbar {
+    width: 0rem;
   }
 }
 </style>

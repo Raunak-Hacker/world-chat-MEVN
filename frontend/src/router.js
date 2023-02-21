@@ -4,6 +4,10 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
+      path: "/",
+      redirect: "/europe",
+    },
+    {
       path: "/:id",
       component: () => import("./pages/ChatUI.vue"),
       props: true,

@@ -1,9 +1,19 @@
 import { createStore } from "vuex";
 
 const store = createStore({
-  state: {},
+  state: {
+    close: true,
+  },
   actions: {},
-  mutations: {},
+  mutations: {
+    toggle(state, payload) {
+      if (payload) {
+        state.close = payload;
+      } else {
+        state.close = !state.close;
+      }
+    },
+  },
   getters: {},
 });
 

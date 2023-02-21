@@ -30,9 +30,7 @@ export default {
       name: "",
     };
   },
-  created() {
-    console.log("AskDialog created");
-  },
+  created() {},
   methods: {
     submitName() {
       this.$emit("nameSubmitted", this.name);

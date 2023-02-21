@@ -21,6 +21,9 @@ a:hover {
 * {
   margin: 0;
 }
+body {
+  background-color: #242526;
+}
 @media (prefers-color-scheme: dark) {
   /* .name {
     color: papayawhip;

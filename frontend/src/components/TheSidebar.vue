@@ -44,7 +44,7 @@
                 <span class="text nav-text">{{ item.label }}</span>
               </a>
             </li>
-            <li @click="">
+            <li @click="logout">
               <a>
                 <i class="bx bx-log-out icon"></i>
                 <span class="text nav-text">Logout</span>
@@ -76,8 +76,8 @@ export default {
   data() {
     return {
       name: localStorage.getItem("name"),
-      close: true,
       dark: false,
+      close: this.$store.state.close,
       activeState: 0,
       menuItems: [
         {
@@ -107,12 +107,19 @@ export default {
       ],
     };
   },
+  computed: {
+    close() {
+      return this.$store.state.close;
+    },
+  },
   methods: {
     logout() {
-      this.$store.dispatch("logout");
+      // remove name from local storage
+      localStorage.removeItem("name");
+      window.location.reload();
     },
     toggle() {
-      this.close = !this.close;
+      this.$store.commit("toggle");
     },
     darkMode() {
       this.dark = !this.dark;
@@ -172,8 +179,8 @@ export default {
 }
 
 .body.dark {
-  /* --body-color: #313f4d; */
-  --body-color: #464646;
+  --body-color: #242526;
+  /* --body-color: #464646; */
   --sidebar-color: #242526;
   --primary-color: #3a3b3c;
   --primary-color-light: #3a3b3c;
@@ -209,7 +216,7 @@ export default {
   color: var(--text-color);
 }
 .sidebar {
-  height: 100%;
+  height: 100vh;
   width: var(--side-width);
   padding: 0.6rem 0.85rem;
   background: var(--sidebar-color);
@@ -277,11 +284,6 @@ body::-webkit-scrollbar {
   position: relative;
 }
 
-.sidebar header .image-text {
-  /* display: flex; */
-  /* align-items: space-around; */
-}
-
 .sidebar header .logo-text {
   display: flex;
   align-items: center;
@@ -336,10 +338,6 @@ header .image-text .profession {
 
 .sidebar.close .toggle {
   transform: translateY(-50%) rotate(0deg);
-}
-
-.sidebar .menu {
-  /* margin-top: 2.5rem; */
 }
 
 .selBox {
@@ -468,5 +466,37 @@ header .image-text .profession {
 
 .body.dark .switch::before {
   left: 1.4rem;
+}
+@media (max-width: 768px) {
+  @keyframes slide {
+    0% {
+      left: -100%;
+    }
+    100% {
+      left: 0;
+    }
+  }
+  .sidebar.close,
+  .toggle {
+    display: none !important;
+  }
+
+  .sidebar {
+    display: block;
+    z-index: 5;
+    width: max-content;
+    animation: slide 0.5s ease;
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  .sidebar.close ~ .home {
+    width: 100%;
+    left: 0;
+  }
+  .sidebar ~ .home {
+    width: 100%;
+    left: 0;
+  }
 }
 </style>

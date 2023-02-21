@@ -14,6 +14,9 @@ export default {
     AboutComp,
     TheSidebar,
   },
+  created() {
+    this.$store.commit("toggle", true);
+  },
   computed: {
     chat() {
       return this.$route.query.q == "chat";
@@ -21,5 +24,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped></style>
