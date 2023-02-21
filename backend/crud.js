@@ -1,10 +1,10 @@
 const fetch = require("node-fetch");
-const url = "https://world-chat-mevn-production.up.railway.app/";
+const url = "http://192.168.1.13:3000/";
 function read(continent) {
   // Read from database
   return fetch(url + "chat/" + continent)
     .then((response) => response.json())
-    .catch((error) => console.error(error));
+    .catch((error) => console.log("Invalid Origin trying to connect"));
 }
 module.exports = { read };
 

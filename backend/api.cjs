@@ -1,14 +1,14 @@
 var mongoose = require("mongoose");
 require("dotenv").config();
-const cors = require("cors");
-const corsOptions = require("./corsOptions");
+// const cors = require("cors");
+const corsOptions = require("./corsOptions.cjs");
 var router = require("express").Router();
 var bodyParser = require("body-parser");
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
 const Joi = require("joi");
 
-router.use(cors(corsOptions));
+// router.use(cors(corsOptions));
 //Whenever request is made to this router, this function will be called
 // router.use(function timeLog(req, res, next) {
 //   console.log("Time: ", Date.now());
@@ -16,25 +16,9 @@ router.use(cors(corsOptions));
 // });
 // 404 error
 
-const itemSchema = new mongoose.Schema({
-  _id: Number,
-  name: String,
-});
 
-const items = mongoose.model("items", itemSchema);
 
-router.get("/items", (req, res) => {
-  items
-    .find()
-    .sort({ name: 1 })
-    .exec((err, items) => {
-      if (err) {
-        console.log(err);
-      } else {
-        res.send(items);
-      }
-    });
-});
+
 
 const chatSchema = new mongoose.Schema({
   name: String,
@@ -122,6 +106,7 @@ router.get("/", function (req, res) {
 });
 
 router.get("/chat/:continent", async function (req, res) {
+  // console.log("req.params.continent");
   try {
     const { continent } = req.params;
     const Model = getModelForContinent(continent);

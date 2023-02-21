@@ -3,7 +3,7 @@
 // Import modules
 const express = require("express");
 const cors = require("cors");
-const corsOptions = require("./corsOptions");
+const corsOptions = require("./corsOptions.cjs");
 const { connectDb } = require("./db.js");
 const { read, addMsg } = require("./crud.js");
 const http = require("http");
@@ -12,7 +12,21 @@ const WebSocket = require("ws");
 // Create Express app
 const app = express();
 app.use(cors(corsOptions));
-app.use(require("./api.js"));
+app.use((err, req, res, next) => {
+  //   // const ipf = "192.168.1.13";
+  console.log(req.ip);
+  if (err) {
+    // console.log(err);
+    res.status(403).send({
+      status: 403,
+      message: err.message,
+    });
+  }
+});
+
+// Register the error handler middleware
+
+app.use(require("./api.cjs"));
 
 // Connect to the database
 (async () => {
@@ -61,7 +75,7 @@ app.use(require("./api.js"));
 
         addMsg(msg);
       } catch (error) {
-        console.error("Error handling WebSocket message:", error);
+        // console.log("Error handling WebSocket message:", error);
       }
     });
 
