@@ -49,11 +49,12 @@ export default {
       socket: {},
       msg: "",
       messages: [],
+      membersOnline: 0,
       socket: null,
       name: localStorage.getItem("name"),
       alert: null,
-      // url: "ws://192.168.1.13:3000/",
-      url: "wss://world-chat-mevn-production.up.railway.app/",
+      url: "ws://192.168.1.13:3000/",
+      // url: "wss://world-chat-mevn-production.up.railway.app/",
       continent: this.$route.params.id,
     };
   },
@@ -94,6 +95,9 @@ export default {
       } else if (message.type === "alert") {
         this.alert = message.message;
         this.msg = message.message;
+      } else if (message.type === "online") {
+        this.membersOnline = message.online;
+        console.log(this.membersOnline);
       } else {
         this.messages.push(message);
       }
