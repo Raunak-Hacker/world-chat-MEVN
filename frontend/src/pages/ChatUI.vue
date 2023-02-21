@@ -84,6 +84,7 @@ export default {
     };
     this.socket.onmessage = (event) => {
       const message = JSON.parse(event.data);
+      console.log(message)
       if (message.messages) {
         if (message.messages.length > 0) {
           this.messages = message.messages;

@@ -3,7 +3,7 @@
 // Import modules
 const express = require("express");
 const cors = require("cors");
-const corsOptions = require("./corsOptions.cjs");
+const { corsOptions, allowedOrigins } = require("./corsOptions.js");
 const { connectDb } = require("./db.js");
 const { read, addMsg } = require("./crud.js");
 const http = require("http");
@@ -12,22 +12,10 @@ const WebSocket = require("ws");
 // Create Express app
 const app = express();
 app.use(cors(corsOptions));
-app.use((err, req, res, next) => {
-  //   // const ipf = "192.168.1.13";
-  const ip = req.connection.remoteAddress.replace("::ffff:", "");
-  console.log(ip);
-  if (err) {
-    // console.log(err);
-    res.status(403).send({
-      status: 403,
-      message: err.message,
-    });
-  }
-});
 
 // Register the error handler middleware
 
-app.use(require("./api.cjs"));
+app.use(require("./api.js"));
 
 // Connect to the database
 (async () => {
@@ -36,10 +24,32 @@ app.use(require("./api.cjs"));
   } catch (error) {
     console.error("Error connecting to database:", error);
   }
-
+  await app.use(async (err, req, res, next) => {
+    // get origin
+    const origin = await req.headers.origin;
+    console.log("origin Index: ", origin);
+    if (err) {
+      return await res.status(403).send({
+        status: 403,
+        message: err.message,
+      });
+    } else {
+      await next();
+    }
+  });
   // Create HTTP server and WebSocket server
   const server = http.createServer(app);
-  const wss = new WebSocket.Server({ server });
+  const wss = new WebSocket.Server({
+    server,
+    verifyClient: (info, done) => {
+      console.log("info.origin", info.origin);
+      if (allowedOrigins.includes(info.origin)) {
+        done(true);
+      } else {
+        done(false, 403, "Invalid Origin");
+      }
+    },
+  });
   const clients = new Map();
 
   // WebSocket connection handler

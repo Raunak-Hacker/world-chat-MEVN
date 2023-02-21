@@ -1,4 +1,6 @@
 const fetch = require("node-fetch");
+const router = require("./api.js");
+
 const url = "http://192.168.1.13:3000/";
 function read(continent) {
   // Read from database
@@ -21,3 +23,4 @@ function addMsg(msg) {
     .catch((error) => console.error(error));
 }
 module.exports = { read, addMsg };
+

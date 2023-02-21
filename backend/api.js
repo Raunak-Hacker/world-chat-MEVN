@@ -1,24 +1,20 @@
 var mongoose = require("mongoose");
 require("dotenv").config();
-// const cors = require("cors");
-const corsOptions = require("./corsOptions.cjs");
+const cors = require("cors");
+const { corsOptions } = require("./corsOptions.js");
 var router = require("express").Router();
 var bodyParser = require("body-parser");
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
 const Joi = require("joi");
 
-// router.use(cors(corsOptions));
+router.use(cors(corsOptions));
 //Whenever request is made to this router, this function will be called
 // router.use(function timeLog(req, res, next) {
 //   console.log("Time: ", Date.now());
 //   next();
 // });
 // 404 error
-
-
-
-
 
 const chatSchema = new mongoose.Schema({
   name: String,
@@ -102,7 +98,8 @@ router.post("/chat-add", (req, res) => {
 
 // Define the home page route
 router.get("/", function (req, res) {
-  return res.send("I am home page");
+  const msg = { msg: "Unlocked!" };
+  return res.send(msg);
 });
 
 router.get("/chat/:continent", async function (req, res) {
@@ -127,4 +124,5 @@ router.use(function (_, res) {
     message: "Sorry can't find that!",
   });
 });
+
 module.exports = router;
