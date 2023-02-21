@@ -1,7 +1,7 @@
 const fetch = require("node-fetch");
-const router = require("./api.js");
+require("dotenv").config();
 
-const url = "http://192.168.1.13:3000/";
+const url = process.env.API_URI;
 function read(continent) {
   // Read from database
   return fetch(url + "chat/" + continent)
