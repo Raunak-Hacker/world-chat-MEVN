@@ -52,7 +52,8 @@ export default {
       socket: null,
       name: localStorage.getItem("name"),
       alert: null,
-      url: "192.168.1.13:3000/",
+      url: "ws://192.168.1.13:3000/",
+      // url: "wss://world-chat-mevn-production.up.railway.app/",
       continent: this.$route.params.id,
     };
   },
@@ -74,9 +75,9 @@ export default {
     }
   },
   mounted() {
-    this.socket = new WebSocket("ws://" + this.url);
+    this.socket = new WebSocket(this.url);
     this.socket.onerror = () => {
-      this.msg = "Connection error";
+      this.msg = "You are not allowed to connect";
       this.alert = true;
     };
     this.socket.onopen = () => {
@@ -84,7 +85,6 @@ export default {
     };
     this.socket.onmessage = (event) => {
       const message = JSON.parse(event.data);
-      console.log(message)
       if (message.messages) {
         if (message.messages.length > 0) {
           this.messages = message.messages;

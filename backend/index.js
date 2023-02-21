@@ -5,17 +5,28 @@ const express = require("express");
 const cors = require("cors");
 const { corsOptions, allowedOrigins } = require("./corsOptions.js");
 const { connectDb } = require("./db.js");
-const { read, addMsg } = require("./crud.js");
 const http = require("http");
 const WebSocket = require("ws");
+const { router, getChats, addChat } = require("./api.js");
 
 // Create Express app
 const app = express();
 app.use(cors(corsOptions));
 
 // Register the error handler middleware
-
-app.use(require("./api.js"));
+app.use(async (err, req, res, next) => {
+  // get origin
+  const origin = await req.headers.origin;
+  if (err) {
+    return await res.status(403).send({
+      status: 403,
+      message: err.message,
+    });
+  } else {
+    await next();
+  }
+});
+app.use(router);
 
 // Connect to the database
 (async () => {
@@ -24,28 +35,16 @@ app.use(require("./api.js"));
   } catch (error) {
     console.error("Error connecting to database:", error);
   }
-  await app.use(async (err, req, res, next) => {
-    // get origin
-    const origin = await req.headers.origin;
-    console.log("origin Index: ", origin);
-    if (err) {
-      return await res.status(403).send({
-        status: 403,
-        message: err.message,
-      });
-    } else {
-      await next();
-    }
-  });
+
   // Create HTTP server and WebSocket server
   const server = http.createServer(app);
   const wss = new WebSocket.Server({
     server,
     verifyClient: (info, done) => {
-      console.log("info.origin", info.origin);
       if (allowedOrigins.includes(info.origin)) {
         done(true);
       } else {
+        console.log("ws Origin Blocked: ", info.origin);
         done(false, 403, "Invalid Origin");
       }
     },
@@ -65,15 +64,17 @@ app.use(require("./api.js"));
       ws.close();
       return;
     }
-    console.log(`Client connected ${ip}`);
     clients.set(ip, ws);
+
+    const ipv4 = ip.replace("::ffff:", "");
+    console.log(`Client connected: ${ipv4}`);
 
     // WebSocket message handler
     ws.on("message", async (message) => {
       try {
         const msg = JSON.parse(message);
         if (msg.get) {
-          const chats = { messages: await read(msg.continent) };
+          const chats = { messages: await getChats(msg.continent) };
           return ws.send(JSON.stringify(chats));
         }
 
@@ -83,8 +84,7 @@ app.use(require("./api.js"));
             clientWs.send(message);
           }
         });
-
-        addMsg(msg);
+        addChat(msg);
       } catch (error) {
         // console.log("Error handling WebSocket message:", error);
       }
@@ -92,7 +92,7 @@ app.use(require("./api.js"));
 
     // WebSocket disconnection handler
     ws.on("close", () => {
-      console.log(`Client disconnected with IP address ${ip}`);
+      console.log(`Client disconnected: ${ipv4}`);
       clients.delete(ip);
     });
   });

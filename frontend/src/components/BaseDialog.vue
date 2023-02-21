@@ -22,7 +22,11 @@
 </template>
 
 <script>
+import BaseButton from "./BaseButton.vue";
 export default {
+  components: {
+    BaseButton,
+  },
   props: {
     show: {
       type: Boolean,
@@ -38,13 +42,13 @@ export default {
       default: false,
     },
   },
-  emits: ['close'],
+  emits: ["close"],
   methods: {
     tryClose() {
       if (this.fixed) {
         return;
       }
-      this.$emit('close');
+      this.$emit("close");
     },
   },
 };

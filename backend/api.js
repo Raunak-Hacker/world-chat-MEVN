@@ -25,7 +25,6 @@ const chatSchema = new mongoose.Schema({
   },
 });
 
-// const chatModel = mongoose.model("chats", chatSchema);
 const models = {
   africa: mongoose.model("africa", chatSchema),
   asia: mongoose.model("asia", chatSchema),
@@ -48,27 +47,28 @@ const chatValidationSchema = Joi.object({
   continent: Joi.string().required(),
 });
 
-router.post("/chat-add", (req, res) => {
-  // Validate request body against schema
-  const { error } = chatValidationSchema.validate(req.body, {
+function addChat(body) {
+  console.log("body", body);
+  const { error } = chatValidationSchema.validate(body, {
     abortEarly: false,
   });
 
   if (error) {
+    console.log("error");
     const errors = error.details.map((err) => {
       return {
         field: err.path[0],
         message: err.message,
       };
     });
-    return res.status(400).send({ errors });
+    return errors;
   }
   try {
-    const continent = req.body.continent;
+    const continent = body.continent;
     const Model = getModelForContinent(continent);
     const chat = new Model({
-      name: req.body.name,
-      message: req.body.message,
+      name: body.name,
+      message: body.message,
     });
     chat.validate((err) => {
       if (err) {
@@ -78,23 +78,20 @@ router.post("/chat-add", (req, res) => {
             message: error.message,
           };
         });
-        return res.status(400).send({ errors });
+        return errors;
       }
-      chat.save((err, chat) => {
+      chat.save((err) => {
         if (err) {
           console.error(err);
-          return res.status(500).send({ error: "Internal server error" });
+          return { error: "Internal server error" };
         }
-        res.send({ status: 200, message: "Message sent successfully" });
+        return { status: 200, message: "Message sent successfully" };
       });
     });
   } catch (error) {
-    return res.status(404).send({
-      status: 400,
-      message: error.message,
-    });
+    return { status: 400, message: error.message };
   }
-});
+}
 
 // Define the home page route
 router.get("/", function (req, res) {
@@ -102,21 +99,11 @@ router.get("/", function (req, res) {
   return res.send(msg);
 });
 
-router.get("/chat/:continent", async function (req, res) {
-  // console.log("req.params.continent");
-  try {
-    const { continent } = req.params;
-    const Model = getModelForContinent(continent);
-    const chats = await Model.find().exec();
-    res.send(chats);
-  } catch (error) {
-    return res.status(404).send({
-      status: 404,
-      message: "Sorry can't find that!",
-    });
-  }
-  // get chats from the continent
-});
+async function getChats(continent) {
+  const Model = getModelForContinent(continent);
+  const chats = await Model.find().exec();
+  return chats;
+}
 
 router.use(function (_, res) {
   res.status(404).send({
@@ -125,4 +112,5 @@ router.use(function (_, res) {
   });
 });
 
-module.exports = router;
+module.exports = { router, getChats, addChat };
+
