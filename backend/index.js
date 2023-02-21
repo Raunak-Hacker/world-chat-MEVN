@@ -14,7 +14,8 @@ const app = express();
 app.use(cors(corsOptions));
 app.use((err, req, res, next) => {
   //   // const ipf = "192.168.1.13";
-  console.log(req.ip);
+  const ip = req.connection.remoteAddress.replace("::ffff:", "");
+  console.log(ip);
   if (err) {
     // console.log(err);
     res.status(403).send({
